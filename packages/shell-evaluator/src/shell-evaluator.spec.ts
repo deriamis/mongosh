@@ -115,4 +115,38 @@ describe('ShellEvaluator', () => {
       expect(result).to.equal('{"a":1}');
     });
   });
+
+  describe('plugins', () => {
+    it('allows specifying commands', async() => {
+      shellEvaluator.registerPlugin({
+        matchesCommand(cmd: string): boolean {
+          return cmd === 'join';
+        },
+        async runCommand(cmd: string, args: string[]): Promise<string> {
+          return args.join(',');
+        }
+      });
+
+      const result = await shellEvaluator.customEval(dontCallEval, 'join a b c', {}, '');
+      expect(result.rawValue).to.equal('a,b,c');
+    });
+
+    it('allows wrapping evaluation errors', async() => {
+      shellEvaluator.registerPlugin({
+        transformError(err: Error): Error {
+          err.message = `<<<${err.message}>>>`;
+          return err;
+        }
+      });
+
+      const originalEval = sinon.stub();
+      originalEval.throws(new Error('abc'));
+      try {
+        await shellEvaluator.customEval(originalEval, 'doSomething();', {}, '');
+        expect.fail('missed assertion');
+      } catch (err) {
+        expect(err.message).to.equal('<<<abc>>>');
+      }
+    });
+  });
 });

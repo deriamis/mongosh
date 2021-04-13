@@ -1,12 +1,13 @@
 import {
   ShellResult,
   ShellEvaluator,
-  EvaluationListener
+  ShellPlugin
 } from './shell-evaluator';
 
 export {
   ShellResult,
   ShellEvaluator,
-  EvaluationListener
+  ShellPlugin
 };
 export default ShellEvaluator;
+export { EvaluationListener } from '@mongosh/shell-api';

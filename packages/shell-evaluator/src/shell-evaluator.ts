@@ -15,6 +15,7 @@ class ShellEvaluator<EvaluationResultType = ShellResult> {
   private internalState: ShellInternalState;
   private resultHandler: ResultHandler<EvaluationResultType>;
   private hasAppliedAsyncWriterRuntimeSupport = true;
+  private plugins: ShellPlugin[] = [];
 
   constructor(internalState: ShellInternalState, resultHandler: ResultHandler<EvaluationResultType> = toShellResult as any) {
     this.internalState = internalState;
@@ -35,6 +36,10 @@ class ShellEvaluator<EvaluationResultType = ShellResult> {
     (this.internalState.asyncWriter as any)?.symbols?.saveState();
   }
 
+  public registerPlugin(plugin: ShellPlugin): void {
+    this.plugins.push(plugin);
+  }
+
   /**
    * Checks for linux-style commands then evaluates input using originalEval.
    *
@@ -46,9 +51,14 @@ class ShellEvaluator<EvaluationResultType = ShellResult> {
   private async innerEval(originalEval: EvaluationFunction, input: string, context: object, filename: string): Promise<any> {
     const { shellApi } = this.internalState;
     const argv = input.trim().replace(/;$/, '').split(/\s+/g);
-    const cmd = argv.shift() as keyof typeof shellApi;
+    const cmd = argv.shift() as (string & keyof typeof shellApi);
     if (shellApi[cmd]?.isDirectShellCommand) {
       return shellApi[cmd](...argv);
+    }
+    for (const plugin of this.plugins) {
+      if (plugin.runCommand && plugin.matchesCommand?.(cmd, argv)) {
+        return plugin.runCommand(cmd, argv, this.internalState.evaluationListener);
+      }
     }
 
     this.saveState();
@@ -78,6 +88,12 @@ class ShellEvaluator<EvaluationResultType = ShellResult> {
     try {
       return await originalEval(rewrittenInput, context, filename);
     } catch (err) {
+      for (const plugin of this.plugins) {
+        if (plugin.transformError && Object.prototype.toString.call(err) === '[object Error]') {
+          // eslint-disable-next-line no-ex-assign
+          err = plugin.transformError(err);
+        }
+      }
       // This is for browser/Compass
       this.revertState();
       throw err;
@@ -104,8 +120,14 @@ class ShellEvaluator<EvaluationResultType = ShellResult> {
   }
 }
 
+interface ShellPlugin {
+  matchesCommand?: (cmd: string, args: string[]) => boolean;
+  runCommand?: (cmd: string, args: string[], evaluationListener: EvaluationListener) => string | Promise<string>;
+  transformError?: (err: Error) => Error;
+}
+
 export {
   ShellResult,
   ShellEvaluator,
-  EvaluationListener
+  ShellPlugin
 };
