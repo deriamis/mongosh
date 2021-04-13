@@ -3,6 +3,7 @@ import { redactCredentials } from '@mongosh/history';
 import i18n from '@mongosh/i18n';
 import { bson, AutoEncryptionOptions } from '@mongosh/service-provider-core';
 import { CliOptions, CliServiceProvider, MongoClientOptions } from '@mongosh/service-provider-server';
+import { SnippetManager } from '@mongosh/snippet-manager';
 import Analytics from 'analytics-node';
 import askpassword from 'askpassword';
 import Nanobus from 'nanobus';
@@ -40,6 +41,7 @@ export type CliReplOptions = {
   shellHomePaths: ShellHomePaths;
   onExit: (code: number) => never;
   analyticsOptions?: AnalyticsOptions;
+  snippetIndexURI?: string;
 } & Pick<MongoshNodeReplOptions, 'nodeReplOptions'>;
 
 /**
@@ -61,6 +63,7 @@ class CliRepl {
   warnedAboutInaccessibleFiles = false;
   onExit: (code: number) => Promise<never>;
   closing = false;
+  snippetIndexURI?: string;
 
   /**
    * Instantiate the new CLI Repl.
@@ -73,6 +76,7 @@ class CliRepl {
     this.analyticsOptions = options.analyticsOptions;
     this.logId = new bson.ObjectId().toString();
     this.onExit = options.onExit;
+    this.snippetIndexURI = options.snippetIndexURI;
 
     this.shellHomeDirectory = new ShellHomeDirectory(options.shellHomePaths);
     this.configDirectory = new ConfigManager<CliUserConfig>(
@@ -165,6 +169,17 @@ class CliRepl {
 
     const initialServiceProvider = await this.connect(driverUri, driverOptions);
     const initialized = await this.mongoshRepl.initialize(initialServiceProvider);
+
+    if (this.snippetIndexURI) {
+      const snippetManager = new SnippetManager({
+        installdir: this.shellHomeDirectory.roamingPath('snippets'),
+        rcFile: this.shellHomeDirectory.rcPath('.mongoshrc.js'),
+        contextObject: this.mongoshRepl.runtimeState().repl.context,
+        indexURI: this.snippetIndexURI
+      });
+      this.mongoshRepl.runtimeState().shellEvaluator.registerPlugin(snippetManager);
+    }
+
     const commandLineLoadFiles = this.listCommandLineLoadFiles();
     if (commandLineLoadFiles.length > 0 || this.cliOptions.eval !== undefined) {
       this.bus.emit('mongosh:start-loading-cli-scripts', { usesShellOption: !!this.cliOptions.shell });

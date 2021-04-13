@@ -61,7 +61,8 @@ import { runMain } from 'module';
         input: process.stdin,
         output: process.stdout,
         onExit: process.exit,
-        shellHomePaths: shellHomePaths
+        shellHomePaths: shellHomePaths,
+        snippetIndexURI: 'https://github.com/addaleax/mongosh-snippets/blob/main/index.bson.br?raw=true'
       });
       await repl.start(driverUri, { appName, ...driverOptions });
     }
