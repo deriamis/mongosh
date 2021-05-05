@@ -1,19 +1,20 @@
 import { constants as fsConstants, promises as fs } from 'fs';
 import os from 'os';
-import { Config, Platform } from '../config';
+import { Config, Platform, validateBuildVariant } from '../config';
+import { PackageFile, createPackage } from './package';
 import { downloadMongocrypt } from './download-mongocryptd';
 import { macOSSignAndNotarize } from './macos-sign';
-import { createPackage, PackageFile } from './package';
 
 export async function runPackage(
   config: Config,
 ): Promise<PackageFile> {
   const distributionBuildVariant = config.distributionBuildVariant;
-  if (!distributionBuildVariant) {
-    throw new Error('distributionBuildVariant is missing in configuration - make sure the expansion is present');
-  }
+  validateBuildVariant(distributionBuildVariant);
 
-  await fs.copyFile(await downloadMongocrypt(), config.mongocryptdPath, fsConstants.COPYFILE_FICLONE);
+  await fs.copyFile(
+    await downloadMongocrypt(distributionBuildVariant),
+    config.mongocryptdPath,
+    fsConstants.COPYFILE_FICLONE);
 
   const runCreatePackage = async(): Promise<PackageFile> => {
     return await createPackage(

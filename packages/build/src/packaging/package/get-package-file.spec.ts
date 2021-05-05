@@ -1,14 +1,13 @@
 import { expect } from 'chai';
-import { BuildVariant } from '../../config';
 import { getPackageFile } from './get-package-file';
 
 describe('tarball getPackageFile', () => {
   context('when the build variant is windows', () => {
     it('returns the windows tarball name', () => {
       expect(
-        getPackageFile(BuildVariant.Windows, '1.0.0', 'mongosh')
+        getPackageFile('win32-x64', '1.0.0', 'mongosh')
       ).to.deep.equal({
-        path: 'mongosh-1.0.0-win32.zip',
+        path: 'mongosh-1.0.0-win32-x64.zip',
         contentType: 'application/zip'
       });
     });
@@ -17,9 +16,9 @@ describe('tarball getPackageFile', () => {
   context('when the build variant is macos', () => {
     it('returns the tarball details', () => {
       expect(
-        getPackageFile(BuildVariant.MacOs, '1.0.0', 'mongosh')
+        getPackageFile('darwin-x64', '1.0.0', 'mongosh')
       ).to.deep.equal({
-        path: 'mongosh-1.0.0-darwin.zip',
+        path: 'mongosh-1.0.0-darwin-x64.zip',
         contentType: 'application/zip'
       });
     });
@@ -28,9 +27,9 @@ describe('tarball getPackageFile', () => {
   context('when the build variant is linux', () => {
     it('returns the tarball details', () => {
       expect(
-        getPackageFile(BuildVariant.Linux, '1.0.0', 'mongosh')
+        getPackageFile('linux-x64', '1.0.0', 'mongosh')
       ).to.deep.equal({
-        path: 'mongosh-1.0.0-linux.tgz',
+        path: 'mongosh-1.0.0-linux-x64.tgz',
         contentType: 'application/gzip'
       });
     });
@@ -39,7 +38,7 @@ describe('tarball getPackageFile', () => {
   context('when the build variant is debian', () => {
     it('returns the tarball details', () => {
       expect(
-        getPackageFile(BuildVariant.Debian, '1.0.0', 'mongosh')
+        getPackageFile('debian-x64', '1.0.0', 'mongosh')
       ).to.deep.equal({
         path: 'mongosh_1.0.0_amd64.deb',
         contentType: 'application/vnd.debian.binary-package'
@@ -50,7 +49,7 @@ describe('tarball getPackageFile', () => {
   context('when the build variant is rhel', () => {
     it('returns the tarball details', () => {
       expect(
-        getPackageFile(BuildVariant.Redhat, '1.0.0', 'mongosh')
+        getPackageFile('rhel-x64', '1.0.0', 'mongosh')
       ).to.deep.equal({
         path: 'mongosh-1.0.0-x86_64.rpm',
         contentType: 'application/x-rpm'
