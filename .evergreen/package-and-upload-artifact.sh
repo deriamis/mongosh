@@ -21,7 +21,6 @@ if [ "$(uname)" == Linux ]; then
     -e EVERGREEN_EXPANSIONS_PATH=/tmp/build/tmp/expansions.yaml \
     -e NODE_JS_VERSION \
     -e DISTRIBUTION_BUILD_VARIANT \
-    -e DISTRIBUTION_BUILD_ARCH \
     -e ARTIFACT_URL_FILE="/tmp/build/artifact-url.txt" \
     --rm -v $PWD:/tmp/build --network host centos7-package \
     -c 'cd /tmp/build && npm run evergreen-release package && npm run evergreen-release upload'
