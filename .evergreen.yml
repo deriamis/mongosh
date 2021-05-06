@@ -946,7 +946,7 @@ tasks:
       - func: checkout
       - func: get_artifact_url
         vars:
-          source_distribution_build_variant: win32
+          source_distribution_build_variant: win32-x64
       - func: write_preload_script
       - func: spawn_host
         vars:
@@ -965,7 +965,7 @@ tasks:
       - func: checkout
       - func: get_artifact_url
         vars:
-          source_distribution_build_variant: win32msi
+          source_distribution_build_variant: win32msi-x64
       - command: shell.exec
         params:
           working_dir: src
@@ -991,7 +991,7 @@ tasks:
       - func: checkout
       - func: get_artifact_url
         vars:
-          source_distribution_build_variant: debian
+          source_distribution_build_variant: debian-x64
       - func: write_preload_script
       - func: test_artifact_docker
         vars:
@@ -1005,7 +1005,7 @@ tasks:
       - func: checkout
       - func: get_artifact_url
         vars:
-          source_distribution_build_variant: debian
+          source_distribution_build_variant: debian-x64
       - func: write_preload_script
       - func: test_artifact_docker
         vars:
@@ -1019,7 +1019,7 @@ tasks:
       - func: checkout
       - func: get_artifact_url
         vars:
-          source_distribution_build_variant: debian
+          source_distribution_build_variant: debian-x64
       - func: write_preload_script
       - func: test_artifact_docker
         vars:
@@ -1033,7 +1033,7 @@ tasks:
       - func: checkout
       - func: get_artifact_url
         vars:
-          source_distribution_build_variant: rhel
+          source_distribution_build_variant: rhel-x64
       - func: write_preload_script
       - func: test_artifact_docker
         vars:
@@ -1047,7 +1047,7 @@ tasks:
       - func: checkout
       - func: get_artifact_url
         vars:
-          source_distribution_build_variant: rhel
+          source_distribution_build_variant: rhel-x64
       - func: write_preload_script
       - func: test_artifact_docker
         vars:
@@ -1061,7 +1061,7 @@ tasks:
       - func: checkout
       - func: get_artifact_url
         vars:
-          source_distribution_build_variant: darwin
+          source_distribution_build_variant: darwin-x64
       - func: write_preload_script
       - func: test_artifact_macos
 
