@@ -51,4 +51,5 @@ function lookupReleaseDistro(variant: BuildVariant): string {
     default:
       break;
   }
+  return '';
 }
