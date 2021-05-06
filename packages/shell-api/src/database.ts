@@ -6,10 +6,10 @@ import {
   returnsPromise,
   returnType,
   serverVersions,
-  ShellApiClass,
   shellApiClassDefault,
   topologies,
-  deprecated
+  deprecated,
+  ShellApiWithMongoClass
 } from './decorators';
 import { ADMIN_DB, asPrintable, ServerVersions, Topologies } from './enums';
 import {
@@ -48,7 +48,7 @@ type AuthDoc = {user: string, pwd: string, authDb?: string, mechanism?: string};
 
 @shellApiClassDefault
 @hasAsyncChild
-export default class Database extends ShellApiClass {
+export default class Database extends ShellApiWithMongoClass {
   _mongo: Mongo;
   _name: string;
   _collections: Record<string, Collection>;

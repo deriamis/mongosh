@@ -3,8 +3,8 @@ import {
   classReturnsPromise,
   hasAsyncChild,
   returnsPromise,
-  ShellApiClass,
-  shellApiClassDefault
+  shellApiClassDefault,
+  ShellApiWithMongoClass
 } from './decorators';
 import {
   Document,
@@ -27,11 +27,11 @@ import { assertArgsDefinedType } from './helpers';
 @hasAsyncChild
 @classReturnsPromise
 @classPlatforms([ ReplPlatform.CLI ] )
-export default class Session extends ShellApiClass {
+export default class Session extends ShellApiWithMongoClass {
   public id: ServerSessionId | undefined;
   public _session: ClientSession;
   public _options: ClientSessionOptions;
-  private _mongo: Mongo;
+  public _mongo: Mongo;
   private _databases: Record<string, Database>;
 
   constructor(mongo: Mongo, options: ClientSessionOptions, session: ClientSession) {

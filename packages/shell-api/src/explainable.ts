@@ -5,9 +5,9 @@ import {
   hasAsyncChild,
   returnsPromise,
   returnType,
-  ShellApiClass,
   shellApiClassDefault,
-  serverVersions
+  serverVersions,
+  ShellApiWithMongoClass
 } from './decorators';
 import { asPrintable, ServerVersions } from './enums';
 import {
@@ -31,7 +31,7 @@ import type {
 
 @shellApiClassDefault
 @hasAsyncChild
-export default class Explainable extends ShellApiClass {
+export default class Explainable extends ShellApiWithMongoClass {
   _mongo: Mongo;
   _collection: Collection;
   _verbosity: ExplainVerbosityLike;

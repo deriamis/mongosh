@@ -3,8 +3,8 @@ import {
   returnsPromise,
   returnType,
   hasAsyncChild,
-  ShellApiClass,
-  deprecated
+  deprecated,
+  ShellApiWithMongoClass
 } from './decorators';
 import {
   ChangeStream,
@@ -24,7 +24,7 @@ import Mongo from './mongo';
 
 @shellApiClassDefault
 @hasAsyncChild
-export default class ChangeStreamCursor extends ShellApiClass {
+export default class ChangeStreamCursor extends ShellApiWithMongoClass {
   _mongo: Mongo;
   _cursor: ChangeStream;
   _currentIterationResult: CursorIterationResult | null = null;
