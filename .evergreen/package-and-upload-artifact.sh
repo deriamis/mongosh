@@ -10,7 +10,6 @@ export ARTIFACT_URL_FILE="$PWD/artifact-url.txt"
 
 source .evergreen/.setup_env
 tar xvzf dist.tgz
-dist/mongosh --version
 
 if [ "$(uname)" == Linux ]; then
   mkdir -p tmp
